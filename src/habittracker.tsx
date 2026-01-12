@@ -547,7 +547,7 @@ const HabitTracker: React.FC = () => {
     <div className="habit-tracker">
       <EvolutionHeader totalWill={totalWill} />
       <header className="header">
-        <h1>🌟 2026 Life Tracker</h1>
+        <h1>🌟 Habit Tracker</h1>
         <div className="year-badge">2026 Edition</div>
         
         <div className="tabs">
