@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface TrackerTableProps {
   filteredHabits: any[];
@@ -46,6 +46,16 @@ const tomorrowStr = tomorrow.toDateString();
       });
     }
   }, [dateRange]);
+  const [deleteModal, SetDeleteModal] = useState(false);
+  const [deleteId, SetDeleteId] = useState('');
+const openDeleteModal = (id: string) => {
+  SetDeleteModal(true);
+  SetDeleteId(id);
+}
+ const handleDeleteHabit = () => {
+    deleteHabit(deleteId);
+    SetDeleteModal(false);
+  }
 
   return (
     <div className="habit-table-wrapper">
@@ -148,7 +158,7 @@ const tomorrowStr = tomorrow.toDateString();
 
                   <td className="actions-cell">
                     <button onClick={() => startEditing(habit)} className="action-button">✏️</button>
-                    <button onClick={() => deleteHabit(habit.id)} className="action-button">🗑️</button>
+                    <button onClick={() => openDeleteModal(habit.id)} className="action-button">🗑️</button>
                   </td>
                 </tr>
               );
@@ -156,6 +166,44 @@ const tomorrowStr = tomorrow.toDateString();
           </tbody>
         </table>
       </div>
+{deleteModal && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    {/* Overlay: darkened background with a nice blur */}
+    <div 
+      className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+      onClick={() => SetDeleteModal(false)}
+    ></div>
+
+    {/* Modal Card */}
+    <div className="relative w-full max-w-sm overflow-hidden rounded-xl bg-[#131314] p-6 shadow-xl" style={{padding:'6px'}}>
+      <h3 className="text-xl font-semibold text-gray-200">
+        Confirm Deletion
+      </h3>
+
+      <p className="text-sm text-gray-300" >
+        Are you sure you want to delete this habit? This action cannot be undone.
+      </p>
+
+      <div className="mt-6 flex justify-end gap-3" style={{marginTop:'10px'}} >
+        {/* Cancel Button */}
+        <button
+          onClick={() => SetDeleteModal(false)}
+          className="rounded-lg px-4 py-2 text-sm font-medium text-gray-400 hover:bg-gray-100 transition-colors" style={{padding:'4px'}}
+        >
+          No, cancel
+        </button>
+
+        {/* Delete Button */}
+        <button
+          onClick={() => handleDeleteHabit()}
+          className="rounded-lg bg-red-600  text-sm font-medium text-white hover:bg-red-700 transition-colors shadow-sm" style={{padding:'4px'}}
+        >
+          Yes, delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };

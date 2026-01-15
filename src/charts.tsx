@@ -65,6 +65,7 @@ const ChartsPage: React.FC<ChartsPageProps> = ({
               return (
                 <div key={area.id} className="goal-summary-item">
                   <div className="goal-summary-header">
+                    <p>{weeklyGoals.length} goals</p>
                     <div className="goal-identity">
                       <Icon size={20} style={{ color: area.color, marginRight: '8px' }} />
                       <span className="goal-name">{area.name}</span>

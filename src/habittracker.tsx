@@ -20,6 +20,8 @@ import TrackerTable from './TrackerTable';
 import WeeklyGoals from './WeeklyGoals';
 import EvolutionHeader from './willpowerheader';
 import { db } from './lib/supabasse';
+import { HiCalendarDateRange, HiChartBar } from 'react-icons/hi2';
+import { Overview } from './overview';
 
 ChartJS.register(
   CategoryScale,
@@ -163,6 +165,8 @@ const HabitTracker: React.FC = () => {
 
     loadData();
   }, []);
+
+  
 
   // Generate weekly goals
   useEffect(() => {
@@ -555,19 +559,19 @@ const HabitTracker: React.FC = () => {
             className={`tab ${activeTab === 'tracker' ? 'active' : ''}`}
             onClick={() => setActiveTab('tracker')}
           >
-            📅 Daily Tracker
+            <HiCalendarDateRange/> Daily Tracker
           </button>
           <button 
             className={`tab ${activeTab === 'charts' ? 'active' : ''}`}
             onClick={() => setActiveTab('charts')}
           >
-            📊 Analytics
+            <HiChartBar/> Analytics
           </button>
           <button 
             className={`tab ${activeTab === 'hexagon' ? 'active' : ''}`}
             onClick={() => setActiveTab('hexagon')}
           >
-            ⬡ Life Hexagon
+            ⬡ Hexagon
           </button>
         </div>
       </header>
@@ -575,54 +579,14 @@ const HabitTracker: React.FC = () => {
       {activeTab === 'tracker' && (
         <>
           {/* Life Areas Overview */}
-          <div className="life-areas-overview">
-            <h2>6 Life Areas Focus</h2>
-            <div className="areas-grid">
-              {LIFE_AREAS.map(area => {
-                const Icon = area.icon;
-                const completion = calculateAreaCompletion(area.id);
-                const currentWeekProgress = getWeeklyProgress(area.id, currentWeek);
-                
-                return (
-                  <div 
-                    key={area.id}
-                    className={`area-card ${selectedArea === area.id ? 'selected' : ''}`}
-                    onClick={() => setSelectedArea(selectedArea === area.id ? 'all' : area.id)}
-                    style={{ borderColor: area.color }}
-                  >
-                    <div className="area-header">
-                      <Icon color={area.color} size={24} />
-                      <h3>{area.name}</h3>
-                    </div>
-                    <p className="area-description">{area.description}</p>
-                    
-                    <div className="area-stats">
-                      <div className="stat">
-                        <div className="stat-label">Overall</div>
-                        <div className="stat-value">{completion.toFixed(1)}%</div>
-                      </div>
-                      <div className="stat">
-                        <div className="stat-label">Week {currentWeek}</div>
-                        <div className={`stat-value ${currentWeekProgress.completed ? 'completed' : ''}`}>
-                          {currentWeekProgress.current}/{currentWeekProgress.target}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="progress-bar">
-                      <div 
-                        className="progress-fill"
-                        style={{ 
-                          width: `${completion}%`,
-                          backgroundColor: area.color
-                        }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+        <Overview 
+        calculateAreaCompletion={calculateAreaCompletion}
+        getWeeklyProgress={getWeeklyProgress}
+        LIFE_AREAS={LIFE_AREAS}
+        currentWeek={currentWeek}
+        selectedArea={selectedArea}
+        setSelectedArea={setSelectedArea}
+      />
 
           {/* Area Filter */}
           <div className="area-filter">
@@ -640,7 +604,6 @@ const HabitTracker: React.FC = () => {
                   className={`filter-button ${selectedArea === area.id ? 'active' : ''}`}
                   onClick={() => setSelectedArea(area.id)}
                   style={{
-                    borderColor: area.color,
                     backgroundColor: selectedArea === area.id ? area.color + '20' : 'transparent'
                   }}
                 >
@@ -722,11 +685,6 @@ const HabitTracker: React.FC = () => {
         <HexagonPage
           lifeAreas={LIFE_AREAS}
           habits={habits}
-          weeklyGoals={weeklyGoals}
-          currentWeek={currentWeek}
-          calculateAreaCompletion={calculateAreaCompletion}
-          getWeeklyProgress={getWeeklyProgress}
-          getHexagonChartData={getHexagonChartData}
           hexagonChartOptions={hexagonChartOptions}
         />
       )}
